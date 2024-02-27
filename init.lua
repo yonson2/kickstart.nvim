@@ -40,7 +40,7 @@ vim.opt.splitbelow = true
 --  See :help 'list'
 --  and :help 'listchars'
 vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣', eol = "↵", extends = ">", precedes = "<" }
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣', eol = '↵', extends = '>', precedes = '<' }
 
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
@@ -76,23 +76,23 @@ vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower win
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- " go to next buffer
-vim.keymap.set({ "n" }, "<leader><Tab>", ":bn<CR>", { desc = "Go to next buffer" })
+vim.keymap.set({ 'n' }, '<leader><Tab>', ':bn<CR>', { desc = 'Go to next buffer' })
 
 -- " go to previous buffer
-vim.keymap.set({ "n" }, "<leader><S-Tab>", ":bp<CR>", { desc = "Go to previous buffer" })
+vim.keymap.set({ 'n' }, '<leader><S-Tab>', ':bp<CR>', { desc = 'Go to previous buffer' })
 
 -- " go to last buffer
-vim.keymap.set({ "n" }, "<leader>p", ":b#<CR>", { desc = "Go to last buffer" })
+vim.keymap.set({ 'n' }, '<leader>p', ':b#<CR>', { desc = 'Go to last buffer' })
 
 -- " Kill buffer without closing split
-vim.keymap.set({ "n" }, "<leader>d", ":bd<CR>", { desc = "Close current buffer" })
+vim.keymap.set({ 'n' }, '<leader>d', ':bd<CR>', { desc = 'Close current buffer' })
 
 -- " Move lines around easily
-vim.keymap.set({ "v" }, "<leader>k", ":m-2<cr>gv=gv", { desc = "Move selected lines up" })
-vim.keymap.set({ "v" }, "<leader>j", ":m'>+<cr>gv=gv", { desc = "Move selected lines down" })
+vim.keymap.set({ 'v' }, '<leader>k', ':m-2<cr>gv=gv', { desc = 'Move selected lines up' })
+vim.keymap.set({ 'v' }, '<leader>j', ":m'>+<cr>gv=gv", { desc = 'Move selected lines down' })
 
 -- Select contents of a whole file
-vim.keymap.set({ "n" }, "<leader>a", "ggVG", { desc = "Select all text" })
+vim.keymap.set({ 'n' }, '<leader>a', 'ggVG', { desc = 'Select all text' })
 
 -- [[ Basic Autocommands ]]
 --  See :help lua-guide-autocommands
@@ -127,7 +127,7 @@ require('lazy').setup({
   --
   --  This is equivalent to:
   --    require('Comment').setup({})
-    
+
   { 'numToStr/Comment.nvim', opts = {} },
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -171,7 +171,7 @@ require('lazy').setup({
         end,
       },
       { 'nvim-telescope/telescope-ui-select.nvim' },
-      { 'nvim-tree/nvim-web-devicons' }
+      { 'nvim-tree/nvim-web-devicons' },
     },
     config = function()
       -- [[ Configure Telescope ]]
@@ -404,7 +404,7 @@ require('lazy').setup({
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
-        javascript = { { "prettierd", "prettier" } },
+        javascript = { { 'prettierd', 'prettier' } },
       },
     },
   },
@@ -501,16 +501,48 @@ require('lazy').setup({
       }
     end,
   },
-
   {
-    'folke/tokyonight.nvim',
-    lazy = false, -- make sure we load this during startup if it is your main colorscheme
-    priority = 1000, -- make sure to load this before all the other start plugins
+    'catppuccin/nvim',
+    name = 'catppuccin',
     config = function()
-      vim.cmd.colorscheme 'tokyonight-night'
-      -- You can configure highlights by doing something like
-      vim.cmd.hi 'Comment gui=none'
+      vim.cmd.colorscheme 'catppuccin'
     end,
+    opts = {
+      term_colors = true,
+      transparent_background = false,
+      background = {
+        light = 'latte',
+        dark = 'mocha',
+      },
+      color_overrides = {
+        mocha = {
+          base = '#000000',
+          mantle = '#000000',
+          crust = '#000000',
+        },
+      },
+      integrations = {
+        cmp = true,
+        gitsigns = true,
+        nvimtree = true,
+        treesitter = true,
+        notify = false,
+        mini = {
+          enabled = true,
+          indentscope_color = '',
+        },
+        mason = true,
+        lsp_trouble = true,
+        which_key = true,
+        telescope = {
+          enabled = true,
+        },
+        dropbar = {
+          enabled = true,
+          color_mode = true,
+        },
+      },
+    },
   },
 
   -- Highlight todo, notes, etc in comments
@@ -569,16 +601,40 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
-  { 'nvim-treesitter/nvim-treesitter-context', opts = {} },
   {
-    "folke/trouble.nvim",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    'nvim-treesitter/nvim-treesitter-context',
+    opts = {},
+  },
+  {
+    'folke/trouble.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
-      vim.keymap.set("n", "<leader>xx", function() require("trouble").toggle() end)
-      vim.keymap.set("n", "<leader>xw", function() require("trouble").toggle("workspace_diagnostics") end)
-      vim.keymap.set("n", "<leader>xd", function() require("trouble").toggle("document_diagnostics") end)
+      vim.keymap.set('n', '<leader>xx', function()
+        require('trouble').toggle()
+      end)
+      vim.keymap.set('n', '<leader>xw', function()
+        require('trouble').toggle 'workspace_diagnostics'
+      end)
+      vim.keymap.set('n', '<leader>xd', function()
+        require('trouble').toggle 'document_diagnostics'
+      end)
     end,
     opts = {},
+  },
+  {
+    'jackMort/ChatGPT.nvim',
+    event = 'VeryLazy',
+    config = function()
+      require('chatgpt').setup {
+        api_key_cmd = 'cat /Users/pedroramos/.config/nvim/openai',
+      }
+    end,
+    dependencies = {
+      'MunifTanjim/nui.nvim',
+      'nvim-lua/plenary.nvim',
+      'folke/trouble.nvim',
+      'nvim-telescope/telescope.nvim',
+    },
   },
 }, {})
 
